@@ -1,0 +1,38 @@
+\begin{thebibliography}{}
+
+\bibitem[Bhandari et~al. 2022]{bhandari:2022}
+Bhandari, H.~N., Rimal, B., Pokhrel, N.~R., Rimal, R., Dahal, K.~R., and Khatri, R. K.~C. (2022).
+\newblock Predicting stock market index using {LSTM}.
+\newblock {\em Machine Learning with Applications}, 9:100320.
+
+\bibitem[Box and Jenkins 1970]{box:1970}
+Box, G. E.~P. and Jenkins, G.~M. (1970).
+\newblock Time series analysis: Forecasting and control.
+\newblock {\em Holden-Day}.
+
+\bibitem[Hochreiter and Schmidhuber 1997]{hochreiter:1997}
+Hochreiter, S. and Schmidhuber, J. (1997).
+\newblock Long short-term memory.
+\newblock {\em Neural Computation}, 9(8):1735--1780.
+
+\bibitem[Mintarya et~al. 2023]{mintarya:2023}
+Mintarya, L.~N., Halim, J.~N., Angie, C., Abas, A.~I., and Kurniawan, A. (2023).
+\newblock Machine learning approaches in stock market prediction: a systematic literature review.
+\newblock {\em Procedia Computer Science}, 216:96--102.
+
+\bibitem[Nascimento et~al. 2022]{nascimento:2022}
+Nascimento, A., Santos, F., and Ferreira, R. (2022).
+\newblock An{\'a}lise comparativa de modelos de previs{\~a}o de s{\'e}ries temporais financeiras: {ARIMA}, {Prophet} e {LSTM}.
+\newblock {\em Revista Brasileira de Computa{\c c}{\~a}o Aplicada}, 14(3).
+
+\bibitem[Silveira 2021]{silveira:2021}
+Silveira, L.~H. (2021).
+\newblock Previs{\~a}o do pre{\c c}o de a{\c c}{\~o}es da {Petrobras} na bolsa de valores {B3} utilizando {LSTM} e {Random Forest}.
+\newblock {\em Trabalho de Conclus{\~a}o de Curso}.
+
+\bibitem[Zanotto and H{\"o}lbig 2026]{zanotto:2026}
+Zanotto, E.~L. and H{\"o}lbig, C.~A. (2026).
+\newblock Previs{\~a}o de pre{\c c}os de a{\c c}{\~o}es e {ETF} na bolsa de valores {B3} aplicando t{\'e}cnicas de machine learning.
+\newblock {\em Revista S{\'i}tio Novo}, 10:e1879.
+
+\end{thebibliography}
