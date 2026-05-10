@@ -10,7 +10,7 @@ Coletar a série histórica de 5 anos do ativo ITUB4.SA via API yfinance, calcul
 |---|---|---|
 | 1. Coleta de dados | [01_coleta_dados.md](01_coleta_dados.md) | `data/raw/ITUB4_raw.csv` |
 | 2. Análise exploratória | [02_analise_exploratoria.md](02_analise_exploratoria.md) | `notebooks/01_eda.ipynb` + figuras em `data/figures/` |
-| 3. Pré-processamento | [03_preprocessamento.md](03_preprocessamento.md) | `data/processed/ITUB4_processed.csv` + scalers em `models/scalers/` |
+| 3. Pré-processamento | [03_preprocessamento.md](../phase2/01_preprocessamento.md) | `data/processed/ITUB4_processed.csv` + scalers em `models/scalers/` |
 
 ## Estrutura de pastas esperada ao final da fase
 

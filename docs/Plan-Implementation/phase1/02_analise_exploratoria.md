@@ -237,4 +237,4 @@ Registrar no notebook o período exato, número de pregões, média, desvio padr
 
 ## Próximo passo
 
-Com as visualizações geradas e a série compreendida, prosseguir para o [Pré-processamento](03_preprocessamento.md).
+Com as visualizações geradas e a série compreendida, prosseguir para o [Pré-processamento](../phase2/01_preprocessamento.md).
