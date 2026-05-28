@@ -1,8 +1,8 @@
 {
   "model": "persistence_baseline",
   "split": "test",
-  "n_samples": 200,
-  "RMSE": 0.599532,
-  "MAE": 0.445015,
-  "MAPE": 1.120467
+  "n_samples": 199,
+  "RMSE": 0.621315,
+  "MAE": 0.467562,
+  "MAPE": 1.156468
 }
