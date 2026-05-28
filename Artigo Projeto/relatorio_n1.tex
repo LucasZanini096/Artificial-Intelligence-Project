@@ -19,6 +19,7 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{amsmath}
+\usepackage{amssymb}
 
 \sloppy
 
@@ -29,6 +30,9 @@
 \makeatletter
 \def\normalsfcodes{\sfcode`\.=\@m}
 \makeatother
+
+% Macro de fonte para figuras e tabelas (NBR 14724)
+\newcommand{\fonte}[1]{\par\vspace{-0.2em}{\footnotesize\textit{Fonte: #1}}\par}
 
 % =============================================================================
 % PREENCHA OS CAMPOS ABAIXO COM OS DADOS DO GRUPO
@@ -60,23 +64,6 @@
 \maketitle
 
 % ---------------------------------------------------------------------------
-\begin{abstract}
-The Brazilian stock exchange (B3) has seen a 23\% growth in individual
-investors in 2023, creating demand for analytical tools to support
-decision-making. This paper presents the partial results of a project that
-applies a single-layer Long Short-Term Memory (LSTM) neural network for
-one-day-ahead closing price prediction of the ITUB4 stock (Itaú Unibanco)
-on the B3. Historical data from the past 5 years is collected via the
-\textit{yfinance} API, covering Open, High, Low, Close, Volume, and
-a 60-day Exponential Moving Average (EMA-60) as features. Data is
-standardized with Z-score normalization and structured into 50-day temporal
-windows with a chronological train/test split (80\%/20\%).
-A persistence model is implemented as a baseline. Performance will be
-evaluated using RMSE, MAE, and MAPE metrics. The expected outcome is
-a model that consistently outperforms the baseline and serves as the backend
-for an interactive Streamlit web application.
-\end{abstract}
-
 \begin{resumo}
 A bolsa de valores brasileira (B3) registrou crescimento de 23\% no número
 de investidores pessoas físicas em 2023, ampliando a demanda por ferramentas
@@ -94,8 +81,30 @@ temporais de 50 dias, com divisão cronológica em treino e teste
 MAE e MAPE. Como resultado esperado, o modelo deve superar o
 \textit{baseline} e ser integrado em uma aplicação web interativa
 desenvolvida com Streamlit.
+
+\vspace{0.5em}\noindent\textbf{Palavras-chave:} LSTM; previsão de preços
+de ações; redes neurais recorrentes; B3; ITUB4; séries temporais.
 \end{resumo}
 
+\begin{abstract}
+The Brazilian stock exchange (B3) has seen a 23\% growth in individual
+investors in 2023, creating demand for analytical tools to support
+decision-making. This paper presents the partial results of a project that
+applies a single-layer Long Short-Term Memory (LSTM) neural network for
+one-day-ahead closing price prediction of the ITUB4 stock (Itaú Unibanco)
+on the B3. Historical data from the past 5 years is collected via the
+\textit{yfinance} API, covering Open, High, Low, Close, Volume, and
+a 60-day Exponential Moving Average (EMA-60) as features. Data is
+standardized with Z-score normalization and structured into 50-day temporal
+windows with a chronological train/test split (80\%/20\%).
+A persistence model is implemented as a baseline. Performance will be
+evaluated using RMSE, MAE, and MAPE metrics. The expected outcome is
+a model that consistently outperforms the baseline and serves as the backend
+for an interactive Streamlit web application.
+
+\vspace{0.5em}\noindent\textbf{Keywords:} LSTM; stock price prediction;
+recurrent neural networks; B3; ITUB4; time series forecasting.
+\end{abstract}
 
 % ===========================================================================
 \section{Introdução}
@@ -126,11 +135,10 @@ extrair padrões significativos de séries históricas.
 Modelos clássicos de séries temporais, como o ARIMA, assumem linearidade e
 estacionariedade nos dados, premissas raramente satisfeitas em séries
 financeiras reais \cite{box:1970}. Redes neurais recorrentes do tipo LSTM
-(\textit{Long Short-Term Memory}), propostas por Hochreiter e Schmidhuber
-(1997), foram projetadas especificamente para aprender dependências temporais
+(\textit{Long Short-Term Memory}), propostas por
+\cite{hochreiter:1997}, foram projetadas especificamente para aprender dependências temporais
 de longo prazo em dados sequenciais não-lineares, tornando-as candidatas
-naturais para a previsão de preços de ativos financeiros
-\cite{hochreiter:1997}.
+naturais para a previsão de preços de ativos financeiros.
 
 A revisão sistemática de \cite{mintarya:2023} confirma que a adoção de
 LSTM em aplicações financeiras cresceu de forma consistente a partir de 2015,
@@ -179,8 +187,8 @@ financeira, com dados capturados pelo grupo via API pública.
 
 A modelagem de séries temporais financeiras tem longa tradição acadêmica. O
 modelo ARIMA (\textit{Auto-Regressive Integrated Moving Average}), introduzido
-por Box e Jenkins na década de 1970, foi por décadas o padrão de referência
-para previsão de séries univariadas \cite{box:1970}. O ARIMA combina
+por \cite{box:1970} na década de 1970, foi por décadas o padrão de referência
+para previsão de séries univariadas. O ARIMA combina
 autorregressão (AR), diferenciação para tornar a série estacionária (I) e
 médias móveis dos resíduos (MA). Suas principais limitações para aplicação
 em dados financeiros são: (i) exigência de estacionariedade, que requer
@@ -584,38 +592,335 @@ podem não se repetir. Períodos de alta volatilidade (como crises financeiras
 ou choques de commodities) podem degradar significativamente o desempenho
 preditivo, limitação que será discutida na aplicação Streamlit.
 
-\subsection{Resultados Parciais Obtidos}
+\subsection{Resultados Obtidos}
 
-Na data de entrega deste relatório, o grupo concluiu as seguintes atividades:
+Na data de entrega deste relatório foram concluídas as Fases~1 e~2 do
+cronograma metodológico e executada uma primeira iteração da Fase~3, com
+treinamento preliminar do modelo LSTM e comparação direta com o
+\textit{baseline} de persistência. Os resultados são reportados a seguir.
+
+\subsubsection{Análise Exploratória dos Dados}
+
+A coleta via API \textit{yfinance} retornou 1.245 pregões do ativo ITUB4.SA
+entre 28/05/2021 e 26/05/2026. As estatísticas descritivas indicam preço de
+fechamento médio de R\$~24,27, com mínimo de R\$~13,78 e máximo de
+R\$~48,91, evidenciando ampla amplitude e regime claramente não-estacionário
+no recorte. O volume médio diário situa-se em 32,8~milhões de papéis
+negociados.
+
+A Figura~\ref{fig:precovolume} apresenta a série de fechamento e o volume
+diário ao longo dos cinco anos. Observa-se trajetória ascendente consistente
+a partir do segundo semestre de 2022, com pico próximo a R\$~49 no início
+de 2026 e correção subsequente para a faixa de R\$~40.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/01_preco_volume.png}
+\caption{ITUB4 -- Preço de fechamento e volume diário no horizonte de 5 anos.}
+\label{fig:precovolume}
+\fonte{Elaborado pelos autores (2026).}
+\end{figure}
+
+A análise dos retornos logarítmicos diários (Figura~\ref{fig:retornos})
+revela distribuição aproximadamente simétrica em torno de zero
+(curtose elevada em relação à normal teórica), com caudas mais pesadas, 
+comportamento típico de séries financeiras. O \textit{outlier} negativo
+próximo a $-0{,}20$ corresponde ao segundo semestre de 2021, em ajuste
+extraordinário do papel.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/02_retornos.png}
+\caption{Retornos logarítmicos diários do ITUB4 e respectiva distribuição empírica.}
+\label{fig:retornos}
+\end{figure}
+
+A sobreposição das médias móveis simples (SMA-20 e SMA-50) e exponencial
+(EMA-60) sobre o preço de fechamento (Figura~\ref{fig:mediasmoveis})
+confirma que a EMA-60 captura a tendência de médio prazo com maior
+estabilidade do que as SMAs, justificando seu uso como \textit{feature}
+adicional.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/03_medias_moveis.png}
+\caption{Preço de fechamento do ITUB4 com sobreposição das médias móveis SMA-20, SMA-50 e EMA-60.}
+\label{fig:mediasmoveis}
+\end{figure}
+
+O mapa de calor de correlação de Pearson (Figura~\ref{fig:correlacao})
+indica forte multicolinearidade entre Open, High, Low, Close e EMA-60
+(todas com $\rho > 0{,}985$), enquanto o Volume apresenta correlação
+negativa moderada com os preços (entre $-0{,}330$ e $-0{,}343$). O padrão
+é consistente com séries de preços de ativos líquidos e reforça o papel
+diferenciado do volume entre as \textit{features} preditoras.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.65\textwidth]{figuras/04_correlacao.png}
+\caption{Matriz de correlação de Pearson entre as variáveis de entrada do modelo.}
+\label{fig:correlacao}
+\fonte{Elaborado pelos autores (2026).}
+\end{figure}
+
+\subsubsection{Pré-processamento e Divisão Temporal}
+
+Após o tratamento de valores ausentes via interpolação linear, a inclusão
+do retorno logarítmico do fechamento como variável-alvo e a remoção da
+linha inicial (defasagem), o \textit{dataset} resultou em 1.244 observações
+e sete variáveis. A divisão cronológica em 80\%/20\% gerou
+\textbf{995 dias para treino} (31/05/2021 a 27/05/2025) e
+\textbf{249 dias para teste} (28/05/2025 a 26/05/2026).
+
+Adotou-se o retorno logarítmico do fechamento como variável-alvo, em
+substituição ao preço absoluto. Essa
+escolha estabiliza a variância da série, aproxima a distribuição da
+hipótese de normalidade e mitiga o risco de o modelo aprender
+prioritariamente a tendência de nível em detrimento da dinâmica de
+variação. A reversão à escala de reais é feita na inferência pela relação
+$\hat{P}_{t+1} = P_t \cdot e^{\hat{r}_{t+1}}$.
+
+A normalização Z-score foi aplicada individualmente às sete \textit{features},
+com $\mu$ e $\sigma$ estimados exclusivamente no conjunto de treino e
+escaladores serializados via \texttt{joblib}. Após o janelamento de 50 dias,
+obtiveram-se os tensores $X_{\text{train}} \in \mathbb{R}^{945 \times 50 \times 7}$
+e $X_{\text{test}} \in \mathbb{R}^{199 \times 50 \times 7}$.
+
+\subsubsection{Modelo \textit{Baseline} de Persistência}
+
+O \textit{baseline} de persistência foi avaliado sobre as 199 amostras do
+conjunto de teste, no período de 07/08/2025 a 26/05/2026. As métricas
+obtidas estão registradas na Tabela~\ref{tab:baseline}.
+
+\begin{table}[ht]
+\centering
+\caption{Métricas do \textit{baseline} de persistência no conjunto de teste (199 amostras)}
+\label{tab:baseline}
+\begin{tabular}{lr}
+\toprule
+\textbf{Métrica} & \textbf{Valor} \\
+\midrule
+RMSE  & R\$ 0,6227 \\
+MAE   & R\$ 0,4705 \\
+MAPE  & 1,1652\% \\
+\bottomrule
+\end{tabular}
+\fonte{Elaborado pelos autores (2026).}
+\end{table}
+
+O MAPE de aproximadamente 1,17\% indica que o \textit{benchmark} trivial
+``amanhã~$=$~hoje'' incorre em erro relativo modesto, em parte explicado
+pela baixa amplitude relativa das variações diárias do ativo no período
+considerado. A Figura~\ref{fig:baseline} mostra a sobreposição entre preço
+real e previsão do \textit{baseline}; a Figura~\ref{fig:residuosbaseline}
+apresenta a distribuição dos resíduos, que se mostra centrada em zero e
+sem viés sistemático visível.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/05_baseline_vs_real.png}
+\caption{Preço real vs.\ previsão do \textit{baseline} de persistência no conjunto de teste.}
+\label{fig:baseline}
+\fonte{Elaborado pelos autores (2026).}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/06_baseline_residuos.png}
+\caption{Resíduos do \textit{baseline} de persistência: série temporal e distribuição empírica.}
+\label{fig:residuosbaseline}
+\fonte{Elaborado pelos autores (2026).}
+\end{figure}
+
+\subsubsection{Treinamento Preliminar da LSTM}
+
+Em sequência, foi treinada a primeira versão do modelo LSTM com a
+arquitetura especificada na Tabela~\ref{tab:arq} (94.951 parâmetros
+treináveis). O treinamento empregou \textit{batch size} de 32, limite de
+150 épocas, fração de validação de 10\% e os \textit{callbacks}
+\textit{Early Stopping} (paciência 10) e \textit{ModelCheckpoint}. A
+interrupção automática ocorreu na 12ª época, com restauração dos pesos da
+2ª época, na qual se observou a menor perda de validação
+($\text{MSE}_{\text{val}} = 0{,}6784$ em espaço normalizado).
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/07_loss.png}
+\caption{Curvas de \textit{loss} de treino e validação ao longo das épocas.}
+\label{fig:loss}
+\fonte{Elaborado pelos autores (2026).}
+\end{figure}
+
+Aplicada ao conjunto de teste, a LSTM apresentou as métricas registradas
+na Tabela~\ref{tab:comparativo}, em comparação direta com o
+\textit{baseline}.
+
+\begin{table}[ht]
+\centering
+\caption{Comparativo \textit{baseline} vs.\ LSTM preliminar no conjunto de teste}
+\label{tab:comparativo}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Métrica} & \textbf{Baseline} & \textbf{LSTM} & \textbf{Variação} \\
+\midrule
+RMSE  & R\$ 0,6227  & R\$ 0,6293  & $-1{,}06\%$ \\
+MAE   & R\$ 0,4705  & R\$ 0,4719  & $-0{,}30\%$ \\
+MAPE  & 1,1652\%    & 1,1703\%    & $-0{,}44\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+As Figuras~\ref{fig:lstmreal} e~\ref{fig:comparativo} apresentam,
+respectivamente, a sobreposição da previsão da LSTM com o preço real e o
+comparativo conjunto entre LSTM, \textit{baseline} e valores observados.
+A análise dos resíduos da LSTM (Figura~\ref{fig:residuoslstm}) revela
+distribuição centrada em zero e dispersão comparável à do \textit{baseline},
+sem viés sistemático aparente.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/08_lstm_vs_real.png}
+\caption{Preço real vs.\ previsão da LSTM preliminar no conjunto de teste.}
+\label{fig:lstmreal}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/09_lstm_vs_baseline.png}
+\caption{Comparativo entre preço real, LSTM e \textit{baseline} no conjunto de teste.}
+\label{fig:comparativo}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/10_lstm_residuos.png}
+\caption{Resíduos da LSTM: série temporal e distribuição empírica.}
+\label{fig:residuoslstm}
+\end{figure}
+
+\subsubsection{Discussão dos Resultados Obtidos}
+
+Os resultados obtidos evidenciam que, na configuração atual, a LSTM
+\textbf{não superou} o \textit{baseline} de persistência em nenhuma das
+três métricas avaliadas. A diferença é pequena em magnitude (inferior a
+1,1\% em RMSE) e provavelmente compatível com ruído de amostragem, mas o
+achado é metodologicamente relevante: confirma a necessidade de iterar
+sobre a configuração do modelo antes da entrega final e sustenta a
+abordagem disciplinada de exigir que a LSTM supere o piso trivial
+estabelecido pela persistência.
+
+Três hipóteses orientam a próxima fase de ajuste:
 
 \begin{itemize}
-  \item \textbf{Revisão da literatura:} análise aprofundada de dois artigos
-        científicos de referência (\cite{zanotto:2026} e \cite{bhandari:2022}),
-        além de revisão de trabalhos relacionados publicados nos últimos cinco
-        anos;
-  \item \textbf{Definição metodológica:} escolha e justificativa do ativo
-        (ITUB4), do período de coleta (5 anos), das variáveis preditoras
-        (OHLCV + EMA-60), da janela temporal (50 dias), da divisão
-        cronológica treino/teste (80\%/20\%), da arquitetura
-        (LSTM 1 camada, 150 neurônios, Dropout 20\%) e das métricas de
-        avaliação (RMSE, MAE, MAPE);
-  \item \textbf{Configuração do ambiente:} estrutura do repositório GitHub
-        criada com organização de pastas para dados, notebooks e aplicação
-        Streamlit; dependências Python definidas.
+  \item \textbf{Convergência precoce:} a melhor época foi a segunda, com
+        estagnação subsequente da perda de validação. Estratégias de
+        redução do \textit{learning rate}, uso de \textit{schedulers}
+        adaptativos e revisão do tamanho do \textit{batch} serão avaliadas;
+  \item \textbf{Característica da variável-alvo:} prever o retorno
+        logarítmico diário é tarefa intrinsecamente ruidosa em ativos de
+        baixa volatilidade relativa. A reavaliação do alvo (preço normalizado
+        direto, ou retorno suavizado) e do horizonte de previsão integrará
+        a próxima iteração;
+  \item \textbf{Capacidade do modelo:} a arquitetura de 150 neurônios em
+        camada única pode estar superdimensionada para o sinal disponível
+        em 5 anos de pregões. Configurações com menor número de unidades,
+        \textit{learning rate} reduzido e regularização adicional serão
+        exploradas para verificar ganho de generalização.
 \end{itemize}
 
-A implementação do código Python (coleta de dados, EDA, treinamento do modelo
-e interface Streamlit) constitui a próxima etapa, conforme o cronograma de
-quatro semanas estabelecido na metodologia.
+A inspeção visual das Figuras~\ref{fig:lstmreal} e~\ref{fig:comparativo}
+sugere que a LSTM aprendeu, em essência, a reproduzir o comportamento de
+persistência, com leve defasagem em transições abruptas. Esse padrão é
+consistente com a hipótese de convergência precoce e direciona as próximas
+iterações da Fase~3 antes da consolidação da entrega final.
+
+\subsubsection{Protótipo Web em Streamlit}
+
+Em paralelo à modelagem, foi desenvolvido o protótipo \textit{web} previsto
+na Fase~4 da metodologia, implementado em Streamlit e organizado no
+diretório \texttt{src/app/} do repositório (módulos \texttt{app.py} e
+\texttt{utils.py}). A aplicação consome diretamente os artefatos
+serializados pelos \textit{notebooks} -- previsões da LSTM
+(\texttt{y\_pred\_lstm.npy}), previsões do \textit{baseline}
+(\texttt{y\_pred\_baseline.npy}), valores reais (\texttt{y\_test\_real.npy}),
+índice temporal (\texttt{test\_dates.npy}) e arquivos JSON de métricas --,
+garantindo coerência integral entre os resultados reportados neste
+documento e a interface apresentada ao usuário final.
+
+A interface implementa os três blocos exigidos pela especificação original:
+(i) gráfico interativo em Plotly sobrepondo preço real, previsão da LSTM e
+\textit{baseline} de persistência sobre o período de teste, com
+\textit{tooltips} formatadas em reais e datas em padrão brasileiro;
+(ii) painel comparativo de métricas (RMSE, MAE, MAPE) apresentado em
+\textit{cards} numéricos individuais e em tabela consolidada, com indicação
+explícita da variação percentual da LSTM em relação ao \textit{baseline};
+e (iii) seção obrigatória de aviso legal e limitações, em conformidade com
+os aspectos éticos discutidos na Subseção~4.1. A Figura~\ref{fig:streamlit}
+apresenta a tela inicial da aplicação em execução.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/11_streamlit_app.png}
+\caption{Tela inicial do protótipo Streamlit -- gráfico comparativo entre preço real, LSTM e \textit{baseline} no período de teste.}
+\label{fig:streamlit}
+\end{figure}
+
+Um painel expansível de ``Detalhes do Modelo'' descreve os
+hiperparâmetros, \textit{features}, janela temporal, normalização e
+otimizador empregados, oferecendo ao usuário a rastreabilidade técnica
+necessária para interpretar criticamente as previsões. O aviso legal --
+\textit{``Esta ferramenta é um apoio analítico baseado em padrões
+históricos. O desempenho passado não garante resultados futuros. Não
+constitui recomendação de investimento.''} é apresentado em destaque
+imediatamente após o painel de métricas, seguido da seção de limitações
+técnicas que explicita a incapacidade do modelo de incorporar eventos
+exógenos, análise fundamentalista, sentimento de mercado e horizontes de
+previsão superiores a um dia útil.
+
+A entrega do protótipo \textit{web} cumpre o objetivo específico definido
+na Subseção~1.3 e completa a infraestrutura prevista para a entrega final.
+As próximas iterações concentram-se exclusivamente no ajuste do modelo
+LSTM, sem necessidade de reescrita da camada de apresentação, bastando
+a substituição dos artefatos serializados quando a nova versão do modelo
+superar o \textit{baseline}.
 
 \subsection{Repositório GitHub}
 
 O código-fonte, os \textit{notebooks} de análise exploratória e os artefatos
-gerados estão disponíveis no repositório público:
+gerados estão disponíveis no repositório público.
+Disponível em: \url{https://github.com/LucasZanini096/Artificial-Intelligence-Project}.
+Acesso em: 27 maio 2026.
 
-\begin{center}
-  \texttt{https://github.com/LucasZanini096/Artificial-Intelligence-Project}
-\end{center}
+% ===========================================================================
+\section{Considerações Finais}
+% ===========================================================================
+
+Este relatório parcial documentou as três primeiras fases do projeto de
+previsão do preço de fechamento da ação ITUB4 com rede neural LSTM:
+coleta e análise exploratória de cinco anos de dados via API
+\textit{yfinance}, pré-processamento com normalização Z-score e janelamento
+temporal de 50 dias, e uma primeira iteração de treinamento do modelo em
+comparação direta com o \textit{baseline} de persistência.
+
+A principal contribuição metodológica até o momento é a constatação,
+amparada por evidência empírica, de que a configuração inicial da LSTM
+(camada única, 150 neurônios, retorno logarítmico como alvo) \textbf{não
+supera} o \textit{baseline} trivial em nenhuma das três métricas avaliadas
+(RMSE, MAE e MAPE), com diferença inferior a 1,1\%. O achado reforça a
+importância de manter o \textit{baseline} como piso obrigatório de
+comparação e direciona as próximas iterações da Fase~3 para três frentes
+específicas: ajuste de \textit{learning rate} e estratégia de
+\textit{schedulers}, reavaliação da variável-alvo (preço normalizado direto
+ou retorno suavizado) e redução da capacidade do modelo para mitigar
+convergência precoce.
+
+A entrega completa o protótipo \textit{web} previsto na Fase~4, integrando
+os artefatos serializados em uma aplicação Streamlit funcional com aviso
+legal e seção de limitações em conformidade com os aspectos éticos
+discutidos. A camada de apresentação está estabilizada e as iterações
+restantes do projeto concentram-se exclusivamente na obtenção de um modelo
+LSTM cujo desempenho supere o \textit{baseline} em todas as métricas, com
+meta de MAPE inferior a 2\% na entrega final.
 
 % ===========================================================================
 \bibliographystyle{sbc}

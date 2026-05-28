@@ -7,8 +7,8 @@ Bhandari, H.~N., Rimal, B., Pokhrel, N.~R., Rimal, R., Dahal, K.~R., and Khatri,
 
 \bibitem[Box and Jenkins 1970]{box:1970}
 Box, G. E.~P. and Jenkins, G.~M. (1970).
-\newblock Time series analysis: Forecasting and control.
-\newblock {\em Holden-Day}.
+\newblock {\em Time Series Analysis: Forecasting and Control}.
+\newblock Holden-Day, San Francisco.
 
 \bibitem[Hochreiter and Schmidhuber 1997]{hochreiter:1997}
 Hochreiter, S. and Schmidhuber, J. (1997).
@@ -28,7 +28,7 @@ Nascimento, A., Santos, F., and Ferreira, R. (2022).
 \bibitem[Silveira 2021]{silveira:2021}
 Silveira, L.~H. (2021).
 \newblock Previs{\~a}o do pre{\c c}o de a{\c c}{\~o}es da {Petrobras} na bolsa de valores {B3} utilizando {LSTM} e {Random Forest}.
-\newblock {\em Trabalho de Conclus{\~a}o de Curso}.
+\newblock Trabalho de conclus{\~a}o de curso (gradua{\c c}{\~a}o em engenharia), Universidade Federal do Rio Grande do Sul, Porto Alegre.
 
 \bibitem[Zanotto and H{\"o}lbig 2026]{zanotto:2026}
 Zanotto, E.~L. and H{\"o}lbig, C.~A. (2026).

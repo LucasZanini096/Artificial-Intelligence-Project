@@ -1,0 +1,15 @@
+{
+  "model": "lstm_single_layer",
+  "architecture": "Input(50,6) \u2192 LSTM(150) \u2192 Dropout(0.2) \u2192 Dense(1)",
+  "split": "test",
+  "n_samples": 199,
+  "best_epoch": 2,
+  "RMSE": 0.62927,
+  "MAE": 0.471878,
+  "MAPE": 1.170343,
+  "melhoria_vs_baseline": {
+    "RMSE_pct": -1.0631,
+    "MAE_pct": -0.3031,
+    "MAPE_pct": -0.4402
+  }
+}
