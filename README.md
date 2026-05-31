@@ -20,10 +20,10 @@ O modelo é comparado a um *baseline* de persistência ("amanhã = hoje") e os r
 
 | Nome | RA |
 | --- | --- |
-| Gabriel Alves de F. Spinola Sucupira | — |
-| Henrique Pena Ribeiro | — |
-| Lucas Zanini da Silva | — |
-| Tiago Teraoka e Sá | — |
+| Gabriel Alves de F. Spinola Sucupira | 10418133 |
+| Henrique Pena Ribeiro | 10417975 |
+| Lucas Zanini da Silva | 10417361 |
+| Tiago Teraoka e Sá | 10418485 |
 
 ---
 
@@ -32,28 +32,86 @@ O modelo é comparado a um *baseline* de persistência ("amanhã = hoje") e os r
 ```
 PROJETO/
 │
-├── README.md                          # Este arquivo
+├── README.md                              # Este arquivo
 ├── .gitignore
-├── 01_IA_EAD_projeto_20261_7N.pdf     # Enunciado oficial do projeto
+├── requirements.txt                       # Dependências Python
+├── 01_IA_EAD_projeto_20261_7N.pdf         # Enunciado oficial do projeto
+├── Entrega-Final.zip                      # Pacote de entrega final
 │
-├── Artigo Projeto/                    # Relatório N1 (LaTeX / SBC)
-│   ├── relatorio_n1.tex               # Código-fonte do artigo
-│   ├── relatorio_n1.pdf               # PDF compilado
-│   ├── referencias_n1.bib             # Referências bibliográficas (BibTeX)
-│   ├── sbc-template.sty               # Estilo SBC
-│   └── sbc.bst                        # Estilo bibliográfico SBC
+├── Artigo Projeto/                        # Relatório (LaTeX / SBC)
+│   ├── relatorio_n1.tex                   # Código-fonte do artigo
+│   ├── relatorio_n1.pdf                   # PDF compilado
+│   ├── referencias_n1.bib                 # Referências bibliográficas (BibTeX)
+│   ├── sbc-template.sty                   # Estilo SBC
+│   ├── sbc.bst                            # Estilo bibliográfico SBC
+│   └── figuras/                           # Gráficos gerados para o artigo
+│       ├── 01_preco_volume.png
+│       ├── 02_retornos.png
+│       ├── 03_medias_moveis.png
+│       ├── 04_correlacao.png
+│       ├── 05_baseline_vs_real.png
+│       ├── 06_baseline_residuos.png
+│       ├── 07_loss.png
+│       ├── 08_lstm_vs_real.png
+│       ├── 09_lstm_vs_baseline.png
+│       ├── 10_lstm_residuos.png
+│       └── 11_streamlit_app.png
 │
-├── Artigos/                           # Material bibliográfico
-│   ├── Predicting stock market index using LSTM.md
-│   ├── Previsão de preços de ações e ETF na bolsa de valores B3 (...).md
-│   └── pdf´s/
-│       ├── Predicting stock market index using LSTM.pdf
-│       └── Previsão de preços de ações e ETF na bolsa de valores B3 (...).pdf
+├── docs/
+│   ├── ADR's/
+│   │   └── 0001-previsao-de-retornos-logaritmicos.md  # Decisão de arquitetura
+│   ├── Articles/                          # Resumos dos artigos de referência
+│   │   ├── Predicting stock market index using LSTM.md
+│   │   ├── Previsão de preços de ações e ETF na bolsa de valores B3 (...).md
+│   │   └── pdf´s/                         # PDFs originais dos artigos
+│   ├── Deliverys/                         # Relatórios entregues nas avaliações
+│   │   ├── Relatorio_parte_1.pdf
+│   │   ├── Relatorio_parte_2.pdf
+│   │   └── Relatorio_parte_3.pdf
+│   ├── Glossary/
+│   │   └── glossary.md                    # Glossário de termos técnicos
+│   └── Plan-Implementation/               # Planos de execução por fase
+│       ├── phase1/                        # Coleta de dados e EDA
+│       ├── phase2/                        # Pré-processamento e baseline
+│       ├── phase3/                        # Construção e avaliação do LSTM
+│       └── phase4/                        # Streamlit e entrega final
 │
-├── Entregas/                          # Arquivos entregues nas avaliações
-│
-└── Glossário/
-    └── glossary.md                    # Glossário de termos técnicos
+└── src/
+    ├── app/                               # Aplicação Streamlit
+    │   ├── app.py                         # Ponto de entrada da aplicação
+    │   ├── utils.py                       # Funções auxiliares
+    │   └── .streamlit/
+    │       └── config.toml                # Configurações de tema e layout
+    │
+    ├── database/
+    │   ├── raw/
+    │   │   └── itub4_raw.csv              # Dados brutos baixados via yfinance
+    │   └── processed/
+    │       └── ITUB4_processed.csv        # Dados com EMA-60 e retornos log
+    │
+    ├── models/
+    │   ├── baseline/
+    │   │   ├── baseline_metrics.json      # RMSE / MAE / MAPE do baseline
+    │   │   ├── y_pred_baseline.npy        # Predições do modelo de persistência
+    │   │   └── y_test_real.npy            # Valores reais do conjunto de teste
+    │   ├── lstm/
+    │   │   ├── lstm_itub4.keras           # Modelo LSTM treinado (Keras)
+    │   │   ├── lstm_metrics.json          # RMSE / MAE / MAPE do LSTM
+    │   │   ├── y_pred_lstm.npy            # Predições do LSTM
+    │   │   └── test_dates.npy             # Datas correspondentes ao teste
+    │   └── scalers/                       # StandardScalers serializados (joblib)
+    │       ├── scaler_close.pkl
+    │       ├── scaler_ema_60.pkl
+    │       ├── scaler_high.pkl
+    │       ├── scaler_log_return_close.pkl
+    │       ├── scaler_low.pkl
+    │       ├── scaler_open.pkl
+    │       └── scaler_volume.pkl
+    │
+    └── notebooks/
+        ├── 1-colect_data.ipynb            # Coleta via yfinance e salva CSV bruto
+        ├── 2-exploration_analysis.ipynb   # EDA — preços, retornos, correlações
+        └── 3-data_preparation_baseline.ipynb  # Pré-processamento, LSTM e baseline
 ```
 
 ---
